@@ -8,3 +8,4 @@
    - jupyter
    - netcdf4
    - scipy
+   - ipyparallel
