@@ -14,7 +14,7 @@ notebooks
 Notebooks associated with R&D activities (emphaisis on the "D")
 
 kazr_contents.ipynb : Notebook examining the contents of a KAZR file
-
+multi_radar_extraction.ipynb : Using IPCluster to map the problem to many cores
 code
 ----
 Python code that can be used stand alone or imported from the notebooks and
