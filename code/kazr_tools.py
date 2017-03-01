@@ -59,8 +59,9 @@ def mean_snr(radar):
     return mean_total
 
 def describe_radar(radar):
-    texture =  get_texture(radar)
-    radar.add_field('velocity_texture', texture, replace_existing = True)
+    if 'velocity_texture' not in radar.fields.keys():
+        texture =  get_texture(radar)
+        radar.add_field('velocity_texture', texture, replace_existing = True)
     sig_dec = pyart.correct.GateFilter(radar)
     sig_dec.exclude_all()
     sig_dec.include_below('velocity_texture', 1.5)
