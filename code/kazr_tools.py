@@ -58,13 +58,24 @@ def mean_snr(radar):
     mean_total = snr.mean(axis=1)
     return mean_total
 
-def describe_radar(radar):
+def describe_radar_texture(radar, level=1.5):
     if 'velocity_texture' not in radar.fields.keys():
         texture =  get_texture(radar)
         radar.add_field('velocity_texture', texture, replace_existing = True)
     sig_dec = pyart.correct.GateFilter(radar)
     sig_dec.exclude_all()
-    sig_dec.include_below('velocity_texture', 1.5)
+    sig_dec.include_below('velocity_texture', level)
+    sig_returns = mean_with_gatefilter(radar, 'snr_copol', sig_dec)
+    bg_returns = mean_with_gatefilter(radar, 'snr_copol', sig_dec, reverse=True)
+    gates_sig = np.ones(radar.fields['snr_copol']['data'].shape)
+    gates_sig[sig_dec.gate_excluded] = 0.0
+    ngates_sig = gates_sig.sum(axis=1)
+    return ngates_sig, sig_returns, bg_returns
+
+def describe_radar_corl(radar, level = 0.5):
+    sig_dec = pyart.correct.GateFilter(radar)
+    sig_dec.exclude_all()
+    sig_dec.include_above('co_to_crosspol_correlation_coeff', level)
     sig_returns = mean_with_gatefilter(radar, 'snr_copol', sig_dec)
     bg_returns = mean_with_gatefilter(radar, 'snr_copol', sig_dec, reverse=True)
     gates_sig = np.ones(radar.fields['snr_copol']['data'].shape)
